@@ -2,23 +2,24 @@ package git.joginder.mikael;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
-    void main(){
+    void main() throws SQLException {
         Scanner scanner = new Scanner(System.in);
 
-        IO.println("**********************************");
+        IO.println("*************************");
         IO.println("WELCOME TO PHONE BOOK.");
-        IO.println("**********************************");
+        IO.println("*************************");
 
         boolean notExit = true;
         while(notExit){
             IO.println(
                     """
-                            ADD, VIEW, UPDATE, & DELETE CONTACTS\
+                            MENU\
                             
                             1. ADD Contact. \
                             
@@ -89,7 +90,19 @@ public class Main {
                     }
                 }
                 case 2 -> IO.println("You have chosen to View a contact.");
-                case 3 -> IO.println("You have chosen to VIEW ALL contact.");
+                case 3 -> {
+
+                    IO.println("ALL CONTACTS");
+                    ContactDao contactDao = new ContactDao();
+                    for(Contact contact : contactDao.findAll()){
+                        IO.println("---------------------");
+                        IO.println("Name: \t" + contact.getName());
+                        IO.println("Email: \t"+ contact.getEmail());
+                        IO.println("Phone: \t"+ contact.getPhone());
+                        IO.println("---------------------");
+                    }
+
+                }
                 case 4 -> IO.println("You have chosen to Update a contact");
                 case 5 -> IO.println("You have chosen to Delete a contact");
                 case 6 -> IO.println("You have chosen to EXPORT TO JSON");

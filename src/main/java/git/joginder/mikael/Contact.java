@@ -43,4 +43,5 @@ public class Contact {
     public int getPhone(){
         return this.phone;
     }
+
 }
