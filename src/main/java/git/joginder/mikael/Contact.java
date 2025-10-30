@@ -12,6 +12,7 @@ public class Contact {
 
     }
 
+    /*
     Contact(String name, int phone){
         this.name = name;
         this.phone = phone;
@@ -21,6 +22,7 @@ public class Contact {
         this.phone = phone;
         this.email = email;
     }
+     */
 
     public void setName(String name){
         this.name = name;

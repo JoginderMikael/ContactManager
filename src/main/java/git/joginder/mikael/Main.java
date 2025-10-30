@@ -3,16 +3,14 @@ package git.joginder.mikael;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Arrays;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
 
-    void main() throws SQLException {
+    void main() {
         Scanner scanner = new Scanner(System.in);
+        ContactService contactService = new ContactService();
 
         IO.println("*************************");
         IO.println("WELCOME TO PHONE BOOK.");
@@ -42,7 +40,7 @@ public class Main {
 
             );
 
-                int choice = 0;
+                int choice;
             try {
                 IO.print("\nCHOOSE AN OPTION: ");
                 choice = scanner.nextInt();
@@ -55,100 +53,14 @@ public class Main {
                 continue;
             }
 
+            final Path path = Paths.get("temp/data");
+
             switch(choice){
-                case 1 -> {
-                    IO.println("ADD CONTACT.");
-
-                    Contact contact = new Contact();
-                    ContactDao contactDao = new ContactDao();
-
-                    String name;
-                    String email;
-                    int phone;
-
-                    IO.print("Enter Name: ");
-                    name = scanner.nextLine();
-
-                    IO.print("Enter Number: ");
-                    phone = scanner.nextInt();
-                    scanner.nextLine();
-
-                    IO.print("Enter Email: ");
-                    email = scanner.nextLine();
-
-
-                    contact.setName(name);
-                    contact.setPhone(phone);
-                    contact.setEmail(email);
-
-                    if(contactDao.insertContact(contact)){
-                        IO.println("------------------------------------");
-                        IO.println("Contact details Added Successfully.");
-                        IO.println("Name: \t" + contact.getName() + "\n"
-                                + "Email: \t" + contact.getEmail() + "\n"
-                                + "Phone: \t" + contact.getPhone());
-                        IO.println("------------------------------------");
-                    }else{
-                        IO.println("Sorry, Failed. Try again.");
-                    }
-                }
-                case 2 -> {
-                    IO.println("VIEW CONTACT\n");
-                    int option = 0;
-                    try {
-                        IO.print("Search by (1. Name, 2. Email): ");
-                         option = scanner.nextInt();
-                        scanner.nextLine();
-                    }catch(InputMismatchException e){
-                        IO.println("WRONG ENTRY.");
-                        scanner.nextLine();
-                        continue;
-                    }
-                    switch (option){
-                        case 1 -> {
-                            IO.print("Enter the name: ");
-                            String name = scanner.nextLine();
-                            ContactDao contactDao = new ContactDao();
-                            if(contactDao.findContactByName(name) != null){
-                                Contact contact = contactDao.findContactByName(name);
-                                IO.println("---------------------");
-                                IO.println("Name: \t" + contact.getName());
-                                IO.println("Email: \t"+ contact.getEmail());
-                                IO.println("Phone: \t"+ contact.getPhone());
-                                IO.println("---------------------");
-                            }else{
-                                IO.println("---------------------");
-                                IO.println("CONTACT NOT FOUND");
-                                IO.println("---------------------");
-                            }
-                        }
-                        case 2 -> {
-                            IO.print("Enter the Email: ");
-                            String email = scanner.nextLine();
-                            ContactDao contactDao = new ContactDao();
-                            if(contactDao.findContactByEmail(email) != null){
-                                Contact contact = contactDao.findContactByEmail(email);
-                                IO.println("---------------------");
-                                IO.println("Name: \t" + contact.getName());
-                                IO.println("Email: \t"+ contact.getEmail());
-                                IO.println("Phone: \t"+ contact.getPhone());
-                                IO.println("---------------------");
-                            }else{
-                                IO.println("---------------------");
-                                IO.println("CONTACT NOT FOUND");
-                                IO.println("---------------------");
-                            }
-                        }
-                        default -> IO.println("WRONG OPTION");
-
-                    }
-
-                }
+                case 1 -> contactService.createContact(scanner);
+                case 2 -> contactService.getContact(scanner);
                 case 3 -> {
-
                     IO.println("ALL CONTACTS");
-                    ContactDao contactDao = new ContactDao();
-                    for(Contact contact : contactDao.findAll()){
+                    for(Contact contact : contactService.getAllContacts()){
                         IO.println("---------------------");
                         IO.println("CONTACT ID: \t" +contact.getId());
                         IO.println("Name: \t" + contact.getName());
@@ -158,91 +70,34 @@ public class Main {
                     }
 
                 }
-                case 4 -> {
-
-                    IO.println("UPDATE CONTACT");
-                    IO.print("Enter Contact ID: ");
-                    int id = scanner.nextInt();
-                    scanner.nextLine();
-
-                    ContactDao contactDao = new ContactDao();
-                    Contact contact = new Contact();
-
-                    IO.print("Enter NEW NAME (press enter to skip): ");
-                    String name = scanner.nextLine();
-                    if (!name.isBlank()) contact.setName(name);
-
-                    IO.print("Enter NEW EMAIL(press enter to skip): ");
-                    String email = scanner.nextLine();
-                    if (!email.isBlank()) contact.setEmail(email);
-
-                    IO.print("Enter NEW NUMBER (press enter to skip): ");
-                    String phoneInput = scanner.nextLine();
-
-                    if (!phoneInput.isBlank()) {
-                        try {
-                            contact.setPhone(Integer.parseInt(phoneInput));
-                        } catch (NumberFormatException e) {
-                            IO.println("Invalid number format. Skipping phone update.");
-                        }
-                    }
-
-                    if(contactDao.update(id, contact)){
-                        IO.println("---------------");
-                        IO.println("UPDATE COMPLETE");
-                        IO.println("---------------");
-                    } else {
-                        IO.println("---------------");
-                        IO.println("UPDATE FAILED");
-                        IO.println("---------------");
-                    }
-                }
-                case 5 -> {
-                    IO.println("DELETE CONTACT");
-                    int phone = 0;
-                    try {
-                        IO.print("Enter the Phone: ");
-                        phone = scanner.nextInt();
-                        scanner.nextLine();
-                    }catch (InputMismatchException e){
-                        IO.println("WRONG ENTRY!");
-                    }
-
-                    ContactDao contactDao = new ContactDao();
-                    if(contactDao.deleteContact(phone)){
-                        IO.println("Contact Deleted Successfully.");
-                    }else{
-                        IO.println("Failed");
-                    }
-                }
+                case 4 -> contactService.updateContact(scanner);
+                case 5 -> contactService.deleteContact(scanner);
                 case 6 -> {
                     IO.println("EXPORT TO JSON");
-                    ContactService contactService = new ContactService();
 
                     //create the directory.
-                    Path dir = Paths.get("temp/data");
-                    Path fileDir = dir.resolve("contacts.json");
+                    Path fileDir = path.resolve("contacts.json");
 
                     if(Files.exists(fileDir)){
                         contactService.exportAllToJson(fileDir);
                     }else{
                         //create path
                         try{
-                            Files.createDirectories(dir);
+                            Files.createDirectories(path);
                             Files.createFile(fileDir);
                             contactService.exportAllToJson(fileDir);
                         } catch (Exception e){
-                            IO.println("Error Ocurred. " + e.getMessage());
+                            IO.println("---------------------------------");
+                            IO.println("Error Occurred. " + e.getMessage());
+                            IO.println("---------------------------------");
                         }
                     }
 
                 }
                 case 7 -> {
-                    Path dir = Paths.get("temp/data");
-                    Path fileDir = dir.resolve("contacts.json");
+                    Path fileDir = path.resolve("contacts.json");
 
                     if(Files.exists(fileDir)){
-                        ContactService contactService = new ContactService();
 
                         for(Contact contact : contactService.importFromJson(fileDir)){
                             IO.println("---------------------");
@@ -252,11 +107,14 @@ public class Main {
                             IO.println("Phone: \t"+ contact.getPhone());
                             IO.println("---------------------");
                         }
-                     // IO.println(contactService.importFromJson(fileDir));
                     } else {
+                        IO.println("---------------------------------");
                         IO.println("The JSON file does not Exist.");
+                        IO.println("---------------------------------");
                     }
+                    IO.println("---------------------------------");
                     IO.println("IMPORT FROM JSON");
+                    IO.println("---------------------------------");
 
                 }
                 case 8 -> {

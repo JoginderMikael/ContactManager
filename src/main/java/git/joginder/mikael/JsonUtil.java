@@ -31,7 +31,10 @@ public class JsonUtil {
             IO.println("Sucessfully written to JSON file.");
             IO.println("----------------------------------");
         } catch (IOException e){
+            IO.println("---------------------------------");
             IO.println("Error writing to the JSON file: " + e.getMessage());
+            IO.println("---------------------------------");
+
         }
     }
 
@@ -49,7 +52,9 @@ public class JsonUtil {
             return objectMapper.readValue(json, listOfContacts);
 
         } catch (IOException e) {
+            IO.println("---------------------------------");
             IO.println("Error Occured." + e.getMessage());
+            IO.println("---------------------------------");
             return new ArrayList<>();
         }
     }

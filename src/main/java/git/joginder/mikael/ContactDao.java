@@ -25,12 +25,19 @@ public class ContactDao {
                 ps.executeUpdate();
                 return true;
             }else{
+                IO.println("---------------------------------");
                 IO.println("DB connection failed");
+                IO.println("---------------------------------");
+
             }
         } catch (RuntimeException e) {
+            IO.println("---------------------------------");
             IO.println("There was an error. " + e.getMessage());
+            IO.println("---------------------------------");
+
             return false;
         } catch (SQLException e) {
+            IO.println("---------------------------------");
             throw new RuntimeException("Failed in Inserting to DB." + e.getMessage());
         }
 
@@ -55,12 +62,15 @@ public class ContactDao {
                 }
             }
         }catch (SQLException e){
+            IO.println("---------------------------------");
             IO.println("Connection Error. " +e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return null;
     }
 
-    List<Contact> findAll() throws SQLException {
+    List<Contact> findAll() {
         String sql = "SELECT id, name, phone, email FROM contacts";
 
         try(Connection conn = DbUtil.getConnection()){
@@ -81,7 +91,10 @@ public class ContactDao {
                 return contacts;
             }
         } catch (SQLException e) {
-            IO.println("Error Occured. " + e.getMessage());
+            IO.println("---------------------------------");
+            IO.println("Error Occurred. " + e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return null;
     }
@@ -109,7 +122,10 @@ public class ContactDao {
 
         //removing the last comma and space
         if(params.isEmpty()){
+            IO.println("---------------------------------");
             IO.println("No Fields to update");
+            IO.println("---------------------------------");
+
             return false;
         }
 
@@ -127,16 +143,13 @@ public class ContactDao {
 
                 int rowsUpdated = ps.executeUpdate();
 
-                if(rowsUpdated > 0){
-                   // IO.println("Contacted Updated");
-                    return true;
-                } else {
-                   // IO.println("Failed");
-                    return false;
-                }
+                return rowsUpdated > 0;
             }
         } catch (Exception e){
-            IO.println("Error Occured. " + e.getMessage());
+            IO.println("---------------------------------");
+            IO.println("Error Occurred. " + e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return true;
     }
@@ -150,7 +163,10 @@ public class ContactDao {
             ps.executeUpdate();
             return true;
         } catch (SQLException e) {
+            IO.println("---------------------------------");
             IO.println("ERROR " + e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return false;
     }
@@ -173,7 +189,10 @@ public class ContactDao {
                 }
             }
         }catch (SQLException e){
+            IO.println("---------------------------------");
             IO.println("Connection Error. " +e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return null;
     }
@@ -197,7 +216,10 @@ public class ContactDao {
                 }
             }
         }catch (SQLException e){
+            IO.println("---------------------------------");
             IO.println("Connection Error. " +e.getMessage());
+            IO.println("---------------------------------");
+
         }
         return null;
     }
