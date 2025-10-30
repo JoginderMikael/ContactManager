@@ -1,5 +1,8 @@
 package git.joginder.mikael;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -212,7 +215,28 @@ public class Main {
                         IO.println("Failed");
                     }
                 }
-                case 6 -> IO.println("You have chosen to EXPORT TO JSON");
+                case 6 -> {
+                    IO.println("EXPORT TO JSON");
+                    ContactService contactService = new ContactService();
+
+                    //create the directory.
+                    Path dir = Paths.get("temp/data");
+                    Path fileDir = dir.resolve("contacts.json");
+
+                    if(Files.exists(fileDir)){
+                        contactService.exportAllToJson(fileDir);
+                    }else{
+                        //create path
+                        try{
+                            Files.createDirectories(dir);
+                            Files.createFile(fileDir);
+                            contactService.exportAllToJson(fileDir);
+                        } catch (Exception e){
+                            IO.println("Error Ocurred. " + e.getMessage());
+                        }
+                    }
+
+                }
                 case 7 -> IO.println("You have chosen to IMPORT FROM");
                 case 8 -> {
                     IO.println("--------------------------");
