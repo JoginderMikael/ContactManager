@@ -243,7 +243,16 @@ public class Main {
 
                     if(Files.exists(fileDir)){
                         ContactService contactService = new ContactService();
-                      IO.println(contactService.importFromJson(fileDir));
+
+                        for(Contact contact : contactService.importFromJson(fileDir)){
+                            IO.println("---------------------");
+                            IO.println("CONTACT ID: \t" +contact.getId());
+                            IO.println("Name: \t" + contact.getName());
+                            IO.println("Email: \t"+ contact.getEmail());
+                            IO.println("Phone: \t"+ contact.getPhone());
+                            IO.println("---------------------");
+                        }
+                     // IO.println(contactService.importFromJson(fileDir));
                     } else {
                         IO.println("The JSON file does not Exist.");
                     }
