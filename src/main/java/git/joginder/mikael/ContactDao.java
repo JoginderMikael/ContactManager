@@ -177,4 +177,28 @@ public class ContactDao {
         }
         return null;
     }
+
+    public Contact findContactById(int id) {
+        String sql = "SELECT id, name, phone, email FROM contacts WHERE id::integer = ?";
+        try(Connection conn = DbUtil.getConnection()){
+            assert conn != null;
+
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, id);
+
+            try(ResultSet rs = ps.executeQuery()){
+                if(rs.next()){
+                    Contact contact = new Contact();
+                    contact.setId((rs.getInt("id")));
+                    contact.setName(rs.getString("name"));
+                    contact.setEmail(rs.getString("email"));
+                    contact.setPhone(rs.getInt("phone"));
+                    return contact;
+                }
+            }
+        }catch (SQLException e){
+            IO.println("Connection Error. " +e.getMessage());
+        }
+        return null;
+    }
 }

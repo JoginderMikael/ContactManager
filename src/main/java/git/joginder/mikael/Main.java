@@ -237,7 +237,19 @@ public class Main {
                     }
 
                 }
-                case 7 -> IO.println("You have chosen to IMPORT FROM");
+                case 7 -> {
+                    Path dir = Paths.get("temp/data");
+                    Path fileDir = dir.resolve("contacts.json");
+
+                    if(Files.exists(fileDir)){
+                        ContactService contactService = new ContactService();
+                      IO.println(contactService.importFromJson(fileDir));
+                    } else {
+                        IO.println("The JSON file does not Exist.");
+                    }
+                    IO.println("IMPORT FROM JSON");
+
+                }
                 case 8 -> {
                     IO.println("--------------------------");
                     IO.println("Thanks for using the APP.");
