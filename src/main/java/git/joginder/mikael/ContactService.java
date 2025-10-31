@@ -115,9 +115,17 @@ public class ContactService {
         }
     }
 
-    List<Contact> getAllContacts() {
+    public void getAllContacts() {
         ContactDao contactDao = new ContactDao();
-       return contactDao.findAll();
+        IO.println("ALL CONTACTS");
+        for(Contact contact : contactDao.findAll()){
+            IO.println("---------------------");
+            IO.println("CONTACT ID: \t" +contact.getId());
+            IO.println("Name: \t" + contact.getName());
+            IO.println("Email: \t"+ contact.getEmail());
+            IO.println("Phone: \t"+ contact.getPhone());
+            IO.println("---------------------");
+        }
     }
 
     public void updateContact(Scanner scanner){
@@ -188,8 +196,7 @@ public class ContactService {
 
     public void exportAllToJson(Path file) {
 
-        List<Contact> list = getAllContacts();
-
+        List<Contact> list = dao.findAll();
         if(list.isEmpty()){
             IO.println("--------------------------------------");
             IO.println("Sorry, there is no contacts to export");

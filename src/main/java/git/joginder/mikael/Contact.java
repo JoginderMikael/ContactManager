@@ -12,18 +12,6 @@ public class Contact {
 
     }
 
-    /*
-    Contact(String name, int phone){
-        this.name = name;
-        this.phone = phone;
-    }
-    Contact(String name, int phone, String email){
-        this.name = name;
-        this.phone = phone;
-        this.email = email;
-    }
-     */
-
     public void setName(String name){
         this.name = name;
     }
