@@ -8,7 +8,7 @@ public class Contact {
    private int phone;
    private int id;
 
-    Contact(){
+    public Contact(){
 
     }
 
